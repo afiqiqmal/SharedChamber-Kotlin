@@ -12,14 +12,14 @@ import java.util.ArrayList
 
 class MainActivity : BaseActivity() {
 
-    internal var NAME_KEY = "user_name"
-    internal var AGE_KEY = "user_age"
-    internal var EMAIL_KEY = "user_email"
-    internal var USER_DETAIL = "user_detail"
-    internal var TASK_DETAIL = "task_detail"
-    internal var IMAGE_KEY = "user_image"
-    internal var FILE_KEY = "user_file"
-    internal var PREFIX: String? = null
+    private var NAME_KEY = "user_name"
+    private var AGE_KEY = "user_age"
+    private var EMAIL_KEY = "user_email"
+    private var USER_DETAIL = "user_detail"
+    private var TASK_DETAIL = "task_detail"
+    private var IMAGE_KEY = "user_image"
+    private var FILE_KEY = "user_file"
+    private var PREFIX: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
