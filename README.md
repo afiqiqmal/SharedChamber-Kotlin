@@ -70,19 +70,19 @@ SharedChamber sharedChamber = new SharedChamber.ChamberBuilder(this)
 ##### Save data
 
 ```java
-sharedChamber.put(KEY,"Hello");
-sharedChamber.put(KEY,1000000);
-sharedChamber.put(KEY,100.00);
-sharedChamber.put(KEY,new byte[]);
-sharedChamber.put(KEY,new Map<String,String>());
+sharedChamber.put(KEY, "Hello");
+sharedChamber.put(KEY, 1000000);
+sharedChamber.put(KEY, 100.00);
+sharedChamber.put(KEY, ByteArray);
+sharedChamber.put(KEY, HashMap<String, String>());
 ...
 ...
 ```
 
 for complex object might need use `putModel` which use gson
 ```
-sharedChamber.putModel(KEY, new Gson().fromJson(loadJSONFromAsset(context, "users.json"), User::class.java));
-sharedChamber.putModel(KEY, new Gson().fromJson(loadJSONFromAsset(context, "users.json"), object : TypeToken<ArrayList<Task>>() {}.type).toString());
+sharedChamber.putModel(KEY, Gson().fromJson(loadJSONFromAsset(context, "users.json"), User::class.java));
+sharedChamber.putModel(KEY, Gson().fromJson(loadJSONFromAsset(context, "users.json"), object : TypeToken<ArrayList<Task>>() {}.type).toString());
 ```
 
 
@@ -96,7 +96,7 @@ sharedChamber.putFile(KEY,getFile,boolean deleteOldFiles);
 
 //put images
 sharedChamber.put(KEY, BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-sharedChamber.put(KEY, File file);
+sharedChamber.put(KEY, File);
 sharedChamber.putDrawable(KEY, Drawable ID);
 ...
 ...
@@ -105,16 +105,16 @@ sharedChamber.putDrawable(KEY, Drawable ID);
 ##### <b>For Method Chaining</b>
 ```java
 new SharedChamber.Editor("PREFIX") // optional - get default from global prefix
-                .put(KEY,"Hello")
-                .put(KEY,1000000)
-                .put(KEY,true)
-                .put(KEY,new byte[])
-                .put(KEY,getFile,boolean deleteOldFiles);
+                .put(KEY, "Hello")
+                .put(KEY, 1000000)
+                .put(KEY, true)
+                .put(KEY, ByteArray)
+                .put(KEY, getFile,boolean deleteOldFiles);
                 .put(KEY, BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                 .put(KEY, imageFile)
-                .put(KEY,STRING_LIST)
-                .put(KEY,FLOAT_LIST)
-		.putModel(KEY, new Gson().fromJson(loadJSONFromAsset(context, "users.json"), User.class));
+                .put(KEY, STRING_LIST)
+                .put(KEY, FLOAT_LIST)
+		.putModel(KEY, Gson().fromJson(loadJSONFromAsset(context, "users.json"), User.class));
                 ...
                 ...
                 .apply(); //.commit();
@@ -144,11 +144,11 @@ List<CryptoFile> getFiles = sharedChamber.getAllChamberFiles();
 
 ```java
 sharedChamber.getString(KEY);
-sharedChamber.getString(KEY,DEFAULT_VALUE);
+sharedChamber.getString(KEY, DEFAULT_VALUE);
 sharedChamber.getInt(KEY);
-sharedChamber.getInt(KEY,DEFAULT_VALUE);
+sharedChamber.getInt(KEY, DEFAULT_VALUE);
 sharedChamber.getDouble(KEY);
-sharedChamber.getDouble(KEY,DEFAULT_VALUE);
+sharedChamber.getDouble(KEY, DEFAULT_VALUE);
 
 //using gson
 sharedChamber.getModel(KEY, User::class.java).toString();
@@ -168,7 +168,7 @@ File enc_file = sharedChamber.getFile(KEY,true);    //return File
 sharedChamber.destroyChamber(); //clear key
 sharedChamber.clearChamber(); // clear all
 
-sharedChamber.remove(KEY1,KEY2,KEY3,KEY4) //String... keys
+sharedChamber.remove(KEY1, KEY2, KEY3, KEY4) //String... keys
 sharedChamber.removeFile(KEY); //delete assosiate file (images and files) return boolean
 ```
 
@@ -258,9 +258,9 @@ secretChamber.lockVaultFile(File file,boolean deleteOldFile);
 ##### Decrypt
 
 ```
-secretChamber.openVault(cipher); // decrypt using facebook conceal
-secretChamber.openVaultBase(cipher,4); // decrypt using basic base64 with iteration
-secretChamber.openVaultAes(cipher); // decrypt using AES
+secretChamber.openVault(cipher!!); // decrypt using facebook conceal
+secretChamber.openVaultBase(cipher!!,4); // decrypt using basic base64 with iteration
+secretChamber.openVaultAes(cipher!!); // decrypt using AES
 
 secretChamber.openVaultFile(File file,boolean deleteOldFile);
 ```

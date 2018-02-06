@@ -10,6 +10,7 @@ import com.zeroone.conceal.model.ChamberType
 
 import java.util.ArrayList
 
+
 class MainActivity : BaseActivity() {
 
     private var NAME_KEY = "user_name"
