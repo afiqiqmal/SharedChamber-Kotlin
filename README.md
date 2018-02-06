@@ -81,8 +81,8 @@ sharedChamber.put(KEY,new Map<String,String>());
 
 for complex object might need use `putModel` which use gson
 ```
-sharedChamber.putModel(KEY, new Gson().fromJson(loadJSONFromAsset(context, "users.json"), User.class));
-sharedChamber.putModel(KEY, new Gson().fromJson(loadJSONFromAsset(context, "users.json"), new TypeToken<ArrayList<Users>>(){}.getType()));
+sharedChamber.putModel(KEY, new Gson().fromJson(loadJSONFromAsset(context, "users.json"), User::class.java));
+sharedChamber.putModel(KEY, new Gson().fromJson(loadJSONFromAsset(context, "users.json"), object : TypeToken<ArrayList<Task>>() {}.type).toString());
 ```
 
 
@@ -151,8 +151,8 @@ sharedChamber.getDouble(KEY);
 sharedChamber.getDouble(KEY,DEFAULT_VALUE);
 
 //using gson
-sharedChamber.getModel(KEY, User.class).toString();
-sharedChamber.getModel(KEY, new TypeToken<ArrayList<Task>>(){}.getType()).toString();
+sharedChamber.getModel(KEY, User::class.java).toString();
+sharedChamber.getModel(KEY, object : TypeToken<ArrayList<Task>>() {}.type).toString();
 .....
 
 Bitmap bitmap = sharedChamber.getImage(KEY);   //return String path
