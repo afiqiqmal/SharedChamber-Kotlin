@@ -1,4 +1,4 @@
-# SharedChamber Android
+# SharedChamber Kotlin Android
 [![](https://jitpack.io/v/afiqiqmal/SharedChamber-Kotlin.svg)](https://jitpack.io/#afiqiqmal/SharedChamber-Kotlin) [![API](https://img.shields.io/badge/API-16%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=16)
 
 <b>Project :</b> SharedChamber on top of SharedPreferences using [Facebook Conceal](http://facebook.github.io/conceal/)<br>
