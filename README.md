@@ -1,5 +1,5 @@
 # SharedChamber Android
-[![](https://jitpack.io/v/afiqiqmal/SharedChamber.svg)](https://jitpack.io/#afiqiqmal/SharedChamber) [![API](https://img.shields.io/badge/API-16%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=16)
+[![](https://jitpack.io/v/afiqiqmal/SharedChamber-Kotlin.svg)](https://jitpack.io/#afiqiqmal/SharedChamber-Kotlin) [![API](https://img.shields.io/badge/API-16%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=16)
 
 <b>Project :</b> SharedChamber on top of SharedPreferences using [Facebook Conceal](http://facebook.github.io/conceal/)<br>
 <b>Description </b>
@@ -11,11 +11,11 @@ Conceal provides a set of Java APIs to perform cryptography on Android. It was d
 Gradle
 ```gradle
 dependencies {
-        compile 'com.github.afiqiqmal:SharedChamber:2.0.0'
+        compile 'com.github.afiqiqmal:SharedChamber-Kotlin:1.0.0'
 
         //or
 
-        compile 'com.github.afiqiqmal:SharedChamber:2.0.0' {
+        compile 'com.github.afiqiqmal:SharedChamber-Kotlin:1.0.0' {
             exclude group: 'com.google.code.gson', module: 'gson'
         }
 }
@@ -24,9 +24,9 @@ dependencies {
 Maven
 ```maven
 <dependency>
-	<groupId>com.github.afiqiqmal</groupId>
-	<artifactId>SharedChamber</artifactId>
-	<version>2.0.0</version>
+	 <groupId>com.github.afiqiqmal</groupId>
+	 <artifactId>SharedChamber-Kotlin</artifactId>
+	 <version>1.0.0</version>
 </dependency>
 ```
 
