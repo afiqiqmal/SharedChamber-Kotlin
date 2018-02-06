@@ -1,4 +1,4 @@
-package com.zeroone.conceal
+package com.chamber.kotlin.library
 
 import android.Manifest
 import android.content.Context
@@ -10,12 +10,13 @@ import com.facebook.crypto.Entity
 import com.facebook.crypto.exception.CryptoInitializationException
 import com.facebook.crypto.exception.KeyChainException
 import com.facebook.crypto.keychain.KeyChain
-import com.zeroone.conceal.model.ChamberType
-import com.zeroone.conceal.model.Constant.DEFAULT_DIRECTORY
-import com.zeroone.conceal.model.Constant.DEFAULT_FILES_FOLDER
-import com.zeroone.conceal.model.Constant.DEFAULT_IMAGE_FOLDER
-import com.zeroone.conceal.model.Constant.DEFAULT_MAIN_FOLDER
-import com.zeroone.conceal.model.Constant.DEFAULT_PREFIX_FILENAME
+import com.zeroone.conceal.BuildConfig
+import com.chamber.kotlin.library.model.ChamberType
+import com.chamber.kotlin.library.model.Constant.DEFAULT_DIRECTORY
+import com.chamber.kotlin.library.model.Constant.DEFAULT_FILES_FOLDER
+import com.chamber.kotlin.library.model.Constant.DEFAULT_IMAGE_FOLDER
+import com.chamber.kotlin.library.model.Constant.DEFAULT_MAIN_FOLDER
+import com.chamber.kotlin.library.model.Constant.DEFAULT_PREFIX_FILENAME
 import java.io.*
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException

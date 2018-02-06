@@ -1,7 +1,7 @@
-package com.zeroone.conceal
+package com.chamber.kotlin.library
 
 import android.util.Base64
-import com.zeroone.conceal.model.Constant.UTF8
+import com.chamber.kotlin.library.model.Constant.UTF8
 import java.io.UnsupportedEncodingException
 import java.util.*
 import javax.crypto.Cipher
@@ -81,35 +81,35 @@ internal object CipherUtils {
 
     @JvmStatic
     fun aesCrypt(key: String, iv: String, data: String): String? {
-        var key = key
+        var newKey = key
         try {
             val CIPHER_KEY_LEN = 16
-            if (key.length < CIPHER_KEY_LEN) {
-                val numPad = CIPHER_KEY_LEN - key.length
+            if (newKey.length < CIPHER_KEY_LEN) {
+                val numPad = CIPHER_KEY_LEN - newKey.length
 
-                val keyBuilder = StringBuilder(key)
+                val keyBuilder = StringBuilder(newKey)
                 for (i in 0 until numPad) {
                     keyBuilder.append("0")
                 }
-                key = keyBuilder.toString()
+                newKey = keyBuilder.toString()
 
-            } else if (key.length > CIPHER_KEY_LEN) {
-                key = key.substring(0, CIPHER_KEY_LEN) //truncate to 16 bytes
+            } else if (newKey.length > CIPHER_KEY_LEN) {
+                newKey = newKey.substring(0, CIPHER_KEY_LEN) //truncate to 16 bytes
             }
 
 
             val initVector = IvParameterSpec(iv.toByteArray(charset(UTF8)))
-            val skeySpec = SecretKeySpec(key.toByteArray(charset(UTF8)), "AES")
+            val skeySpec = SecretKeySpec(newKey.toByteArray(charset(UTF8)), "AES")
 
             val cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
             cipher.init(Cipher.ENCRYPT_MODE, skeySpec, initVector)
 
             val encryptedData = cipher.doFinal(data.toByteArray())
 
-            val base64_EncryptedData = Base64.encodeToString(encryptedData, Base64.DEFAULT)
-            val base64_IV = Base64.encodeToString(iv.toByteArray(charset(UTF8)), Base64.DEFAULT)
+            val base64EncryptedData = Base64.encodeToString(encryptedData, Base64.DEFAULT)
+            val base64IV = Base64.encodeToString(iv.toByteArray(charset(UTF8)), Base64.DEFAULT)
 
-            return Base64.encodeToString((base64_EncryptedData + ":" + base64_IV).toByteArray(charset(UTF8)), Base64.DEFAULT)
+            return Base64.encodeToString((base64EncryptedData + ":" + base64IV).toByteArray(charset(UTF8)), Base64.DEFAULT)
 
         } catch (ex: Exception) {
             ex.printStackTrace()
@@ -120,27 +120,26 @@ internal object CipherUtils {
 
     @JvmStatic
     fun aesDecrypt(key: String, data: String): String? {
-        var key = key
+        var newKey = key
         try {
-
             val CIPHER_KEY_LEN = 16
-            if (key.length < CIPHER_KEY_LEN) {
-                val numPad = CIPHER_KEY_LEN - key.length
+            if (newKey.length < CIPHER_KEY_LEN) {
+                val numPad = CIPHER_KEY_LEN - newKey.length
 
-                val keyBuilder = StringBuilder(key)
+                val keyBuilder = StringBuilder(newKey)
                 for (i in 0 until numPad) {
                     keyBuilder.append("0")
                 }
-                key = keyBuilder.toString()
+                newKey = keyBuilder.toString()
 
-            } else if (key.length > CIPHER_KEY_LEN) {
-                key = key.substring(0, CIPHER_KEY_LEN) //truncate to 16 bytes
+            } else if (newKey.length > CIPHER_KEY_LEN) {
+                newKey = newKey.substring(0, CIPHER_KEY_LEN) //truncate to 16 bytes
             }
 
             val parts = String(Base64.decode(data, Base64.DEFAULT)).split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
             val iv = IvParameterSpec(Base64.decode(parts[1], Base64.DEFAULT))
-            val skeySpec = SecretKeySpec(key.toByteArray(charset(UTF8)), "AES")
+            val skeySpec = SecretKeySpec(newKey.toByteArray(charset(UTF8)), "AES")
 
             val cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
             cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv)

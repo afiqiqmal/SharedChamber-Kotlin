@@ -1,4 +1,4 @@
-package com.zeroone.concealexample
+package com.chamber.kotlin.sample
 
 /**
  * @author : hafiq on 22/09/2017.

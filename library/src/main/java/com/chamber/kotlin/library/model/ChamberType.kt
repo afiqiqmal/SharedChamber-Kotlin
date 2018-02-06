@@ -1,10 +1,10 @@
-package com.zeroone.conceal.model
+package com.chamber.kotlin.library.model
 
 import com.facebook.crypto.CryptoConfig
 
 /**
- * Created by hafiq on 28/01/2018.
- */
+* @author by hafiq on 28/01/2018.
+*/
 
 enum class ChamberType private constructor(val config: CryptoConfig) {
 

@@ -1,12 +1,13 @@
-package com.zeroone.concealexample
+package com.chamber.kotlin.sample
 
 import android.os.Bundle
 import android.util.Log
 
 import com.google.gson.reflect.TypeToken
-import com.zeroone.conceal.SecretBuilder
-import com.zeroone.conceal.SharedChamber
-import com.zeroone.conceal.model.ChamberType
+import com.chamber.kotlin.library.SecretBuilder
+import com.chamber.kotlin.library.SharedChamber
+import com.chamber.kotlin.library.model.ChamberType
+import com.zeroone.concealexample.R
 
 import java.util.ArrayList
 

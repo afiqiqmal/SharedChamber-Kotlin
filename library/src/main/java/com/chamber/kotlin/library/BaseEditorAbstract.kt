@@ -1,4 +1,4 @@
-package com.zeroone.conceal
+package com.chamber.kotlin.library
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -8,8 +8,8 @@ import android.support.annotation.DrawableRes
 import java.io.File
 
 /**
- * Created by hafiq on 28/01/2018.
- */
+* @author by hafiq on 28/01/2018.
+*/
 
 abstract class BaseEditorAbstract<T : BaseEditorAbstract<T>> : BaseBuilderAbstract {
 

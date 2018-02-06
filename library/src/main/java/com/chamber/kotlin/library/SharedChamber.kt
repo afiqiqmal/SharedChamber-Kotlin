@@ -1,11 +1,10 @@
-package com.zeroone.conceal
+package com.chamber.kotlin.library
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.preference.PreferenceManager
@@ -14,36 +13,36 @@ import android.support.annotation.DrawableRes
 import android.support.annotation.RequiresPermission
 import com.facebook.soloader.SoLoader
 import com.google.gson.Gson
-import com.zeroone.conceal.FileUtils.Companion.getDirectory
-import com.zeroone.conceal.FileUtils.Companion.getImageDirectory
-import com.zeroone.conceal.FileUtils.Companion.getListFiles
+import com.chamber.kotlin.library.FileUtils.getDirectory
+import com.chamber.kotlin.library.FileUtils.getImageDirectory
+import com.chamber.kotlin.library.FileUtils.getListFiles
 import com.zeroone.conceal.listener.OnDataChamberChangeListener
-import com.zeroone.conceal.model.ChamberType
-import com.zeroone.conceal.model.Constant
-import com.zeroone.conceal.model.Constant.ADDRESS
-import com.zeroone.conceal.model.Constant.AGE
-import com.zeroone.conceal.model.Constant.BIRTH_DATE
-import com.zeroone.conceal.model.Constant.DEFAULT_MAIN_FOLDER
-import com.zeroone.conceal.model.Constant.DEVICE_DETAIL
-import com.zeroone.conceal.model.Constant.DEVICE_ID
-import com.zeroone.conceal.model.Constant.DEVICE_IS_UPDATE
-import com.zeroone.conceal.model.Constant.DEVICE_OS
-import com.zeroone.conceal.model.Constant.DEVICE_VERSION
-import com.zeroone.conceal.model.Constant.EMAIL
-import com.zeroone.conceal.model.Constant.FIRST_NAME
-import com.zeroone.conceal.model.Constant.FIRST_TIME_USER
-import com.zeroone.conceal.model.Constant.FULLNAME
-import com.zeroone.conceal.model.Constant.GENDER
-import com.zeroone.conceal.model.Constant.HAS_LOGIN
-import com.zeroone.conceal.model.Constant.LAST_NAME
-import com.zeroone.conceal.model.Constant.MOBILE_NO
-import com.zeroone.conceal.model.Constant.NAME
-import com.zeroone.conceal.model.Constant.PASSWORD
-import com.zeroone.conceal.model.Constant.PHONE_NO
-import com.zeroone.conceal.model.Constant.PUSH_TOKEN
-import com.zeroone.conceal.model.Constant.USER_ID
-import com.zeroone.conceal.model.Constant.USER_JSON
-import com.zeroone.conceal.model.CryptoFile
+import com.chamber.kotlin.library.model.ChamberType
+import com.chamber.kotlin.library.model.Constant
+import com.chamber.kotlin.library.model.Constant.ADDRESS
+import com.chamber.kotlin.library.model.Constant.AGE
+import com.chamber.kotlin.library.model.Constant.BIRTH_DATE
+import com.chamber.kotlin.library.model.Constant.DEFAULT_MAIN_FOLDER
+import com.chamber.kotlin.library.model.Constant.DEVICE_DETAIL
+import com.chamber.kotlin.library.model.Constant.DEVICE_ID
+import com.chamber.kotlin.library.model.Constant.DEVICE_IS_UPDATE
+import com.chamber.kotlin.library.model.Constant.DEVICE_OS
+import com.chamber.kotlin.library.model.Constant.DEVICE_VERSION
+import com.chamber.kotlin.library.model.Constant.EMAIL
+import com.chamber.kotlin.library.model.Constant.FIRST_NAME
+import com.chamber.kotlin.library.model.Constant.FIRST_TIME_USER
+import com.chamber.kotlin.library.model.Constant.FULLNAME
+import com.chamber.kotlin.library.model.Constant.GENDER
+import com.chamber.kotlin.library.model.Constant.HAS_LOGIN
+import com.chamber.kotlin.library.model.Constant.LAST_NAME
+import com.chamber.kotlin.library.model.Constant.MOBILE_NO
+import com.chamber.kotlin.library.model.Constant.NAME
+import com.chamber.kotlin.library.model.Constant.PASSWORD
+import com.chamber.kotlin.library.model.Constant.PHONE_NO
+import com.chamber.kotlin.library.model.Constant.PUSH_TOKEN
+import com.chamber.kotlin.library.model.Constant.USER_ID
+import com.chamber.kotlin.library.model.Constant.USER_JSON
+import com.chamber.kotlin.library.model.CryptoFile
 import java.io.File
 import java.io.IOException
 import java.lang.reflect.Type
@@ -52,16 +51,47 @@ import java.util.*
 /**
  * @author : hafiq on 23/03/2017.
  */
-class SharedChamber
 @SuppressLint("CommitPrefEdits")
-private constructor(builder: ChamberBuilder) : BaseRepository() {
+class SharedChamber private constructor(builder: ChamberBuilder) : BaseRepository() {
+
+    init {
+        mContext = builder.context
+        chamberFolderName = builder.getFolderName()!!
+        sharedPreferences = builder.sharedPreferences
+        onDataChangeListener = builder.onDataChangeListener
+        defaultPrefix = builder.defaultPrefix
+
+        val mKeyChain = builder.keyChain
+        val mEnabledCrypto = builder.isEnabledCrypto
+        val mEnableCryptKey = builder.isEnableCryptKey
+        val mEntityPasswordRaw = builder.entityPasswordRaw
+
+        //init editor
+        editor = sharedPreferences!!.edit()
+
+        //init crypto
+        secretChamber = SecretBuilder(mContext!!)
+                .setPassword(mEntityPasswordRaw)
+                .setChamberType(mKeyChain)
+                .setEnableValueEncryption(mEnabledCrypto)
+                .setEnableKeyEncryption(mEnableCryptKey)
+                .setStoredFolder(getChamberFolderName())
+                .buildSecret()
+
+        //init listener if set
+        if (onDataChangeListener != null) {
+            sharedPreferences!!.
+                    registerOnSharedPreferenceChangeListener({
+                        sharedPreferences, key -> onDataChangeListener!!.onDataChange(key, sharedPreferences.getString(key, ""))
+                    })
+        }
+    }
 
     /*******************************
      * GET SHAREDPREFERENCES TOTAL
      */
     val chamberSize: Int
         get() = chamber.all.size
-
 
     /**
      * get all encrypted file in created folder
@@ -108,37 +138,6 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
             return data
         }
 
-    init {
-        mContext = builder.context
-        BaseRepository.chamberFolderName = builder.getFolderName()!!
-        BaseRepository.sharedPreferences = builder.sharedPreferences
-        BaseRepository.onDataChangeListener = builder.onDataChangeListener
-        BaseRepository.defaultPrefix = if (builder.defaultPrefix == null) "" else builder.defaultPrefix
-
-        val mKeyChain = builder.keyChain
-        val mEnabledCrypto = builder.isEnabledCrypto
-        val mEnableCryptKey = builder.isEnableCryptKey
-        val mEntityPasswordRaw = builder.entityPasswordRaw
-
-        //init editor
-        BaseRepository.editor = BaseRepository.sharedPreferences!!.edit()
-
-        //init crypto
-        BaseRepository.secretChamber = SecretBuilder(mContext!!)
-                .setPassword(mEntityPasswordRaw)
-                .setChamberType(mKeyChain)
-                .setEnableValueEncryption(mEnabledCrypto)
-                .setEnableKeyEncryption(mEnableCryptKey)
-                .setStoredFolder(getChamberFolderName())
-                .buildSecret()
-
-        //init listener if set
-        if (BaseRepository.onDataChangeListener != null) {
-            BaseRepository.sharedPreferences!!.
-                    registerOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key -> BaseRepository.onDataChangeListener!!.onDataChange(key, sharedPreferences.getString(key, "")) })
-        }
-    }
-
     /**********************
      * DESTROY FILES
      */
@@ -148,7 +147,7 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
 
     fun clearChamber() {
         try {
-            chamberEditor!!.clear().apply()
+            chamberEditor.clear().apply()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -162,13 +161,13 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
     /* Remove by Key */
     fun remove(vararg keys: String) {
         for (key in keys) {
-            chamberEditor!!.remove(hashKey(key))
+            chamberEditor.remove(hashKey(key))
         }
-        chamberEditor!!.apply()
+        chamberEditor.apply()
     }
 
     fun remove(key: String) {
-        chamberEditor!!.remove(hashKey(key)).apply()
+        chamberEditor.remove(hashKey(key)).apply()
     }
 
     /**
@@ -197,13 +196,13 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
      * @return - value
      */
     operator fun contains(key: String): Boolean {
-        return chamber!!.contains(hashKey(key))
+        return chamber.contains(hashKey(key))
     }
 
     /* Save Data */
 
     fun put(key: String, value: String) {
-        chamberEditor!!.putString(hashKey(key), hideValue(value)).apply()
+        chamberEditor.putString(hashKey(key), hideValue(value)).apply()
     }
 
     fun put(key: String, value: Int) {
@@ -240,7 +239,7 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
 
     @RequiresPermission(allOf = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
     fun put(key: String, bitmap: Bitmap): String? {
-        val imageFile = File(getImageDirectory(getChamberFolderName()!!), "images_" + System.currentTimeMillis() + ".png")
+        val imageFile = File(getImageDirectory(getChamberFolderName()), "images_" + System.currentTimeMillis() + ".png")
         if (FileUtils.saveBitmap(imageFile, bitmap)) {
             getSecretChamber()!!.lockVaultFile(imageFile, true)
             put(key, imageFile.absolutePath)
@@ -252,7 +251,7 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
     @RequiresPermission(allOf = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
     fun put(key: String, file: File?): String? {
         if (FileUtils.isFileForImage(file)) {
-            val imageFile = FileUtils.moveFile(file, getImageDirectory(getChamberFolderName()!!))
+            val imageFile = FileUtils.moveFile(file, getImageDirectory(getChamberFolderName()))
             if (imageFile != null && imageFile.exists()) {
                 getSecretChamber()!!.lockVaultFile(imageFile, true)
                 put(key, imageFile.absolutePath)
@@ -285,7 +284,7 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
     fun putDrawable(key: String, @DrawableRes resId: Int): String? {
         val bitmap = BitmapFactory.decodeResource(mContext!!.resources, resId)
         if (bitmap != null) {
-            val imageFile = File(getImageDirectory(getChamberFolderName()!!), "images_" + System.currentTimeMillis() + ".png")
+            val imageFile = File(getImageDirectory(getChamberFolderName()), "images_" + System.currentTimeMillis() + ".png")
             if (FileUtils.saveBitmap(imageFile, bitmap)) {
                 getSecretChamber()!!.lockVaultFile(imageFile, true)
                 put(key, imageFile.absolutePath)
@@ -309,12 +308,12 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
      */
     @CheckResult
     fun getString(key: String): String? {
-        return getSecretChamber()!!.openVault(chamber!!.getString(hashKey(key), null))
+        return getSecretChamber()!!.openVault(chamber.getString(hashKey(key), null))
     }
 
     @CheckResult
     fun getString(key: String, defaultValue: String): String? {
-        return getSecretChamber()!!.openVault(chamber!!.getString(hashKey(key), defaultValue))
+        return getSecretChamber()!!.openVault(chamber.getString(hashKey(key), defaultValue))
     }
 
     @CheckResult
@@ -385,7 +384,6 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
     fun getDouble(key: String): Double? {
         try {
             val value = getString(key) ?: return 0.0
-
             return java.lang.Double.parseDouble(value)
         } catch (e: Exception) {
             throwRunTimeException("Unable to convert to Double data type", e)
@@ -535,18 +533,18 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
 
     class DeviceChamber : DeviceAbstract<DeviceChamber> {
 
-        constructor() : super(BaseRepository.sharedPreferences) {
+        constructor() : super(sharedPreferences) {
             secretChamber = BaseRepository.secretChamber
         }
 
-        constructor(keyPrefix: String?) : super(keyPrefix, BaseRepository.sharedPreferences) {
+        constructor(keyPrefix: String?) : super(keyPrefix, sharedPreferences) {
             if (keyPrefix == null) {
                 setDefaultPrefix(defaultPrefix)
             }
             secretChamber = BaseRepository.secretChamber
         }
 
-        constructor(keyPrefix: String?, defaultEmptyValue: String?) : super(keyPrefix, defaultEmptyValue, BaseRepository.sharedPreferences) {
+        constructor(keyPrefix: String?, defaultEmptyValue: String?) : super(keyPrefix, defaultEmptyValue, sharedPreferences) {
             if (keyPrefix == null) {
                 setDefaultPrefix(defaultPrefix!!)
             }
@@ -635,18 +633,18 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
     }
 
     class UserChamber : UserAbstract<UserChamber> {
-        constructor() : super(BaseRepository.sharedPreferences!!) {
+        constructor() : super(sharedPreferences!!) {
             secretChamber = BaseRepository.secretChamber
         }
 
-        constructor(keyPrefix: String?) : super(keyPrefix, BaseRepository.sharedPreferences!!) {
+        constructor(keyPrefix: String?) : super(keyPrefix, sharedPreferences!!) {
             if (keyPrefix == null) {
                 setDefaultPrefix(defaultPrefix!!)
             }
             secretChamber = BaseRepository.secretChamber
         }
 
-        constructor(keyPrefix: String?, defaultEmptyValue: String?) : super(keyPrefix, defaultEmptyValue, BaseRepository.sharedPreferences!!) {
+        constructor(keyPrefix: String?, defaultEmptyValue: String?) : super(keyPrefix, defaultEmptyValue, sharedPreferences!!) {
             if (keyPrefix == null) {
                 setDefaultPrefix(defaultPrefix!!)
             }
@@ -837,13 +835,13 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
             editor!!.putString(setHashKey(EMAIL), hideValue(email)).apply()
         }
 
-        public override fun setPushToken(token: String): UserChamber {
-            editor!!.putString(setHashKey(PUSH_TOKEN), hideValue(token))
+        public override fun setPushToken(pushToken: String): UserChamber {
+            editor!!.putString(setHashKey(PUSH_TOKEN), hideValue(pushToken))
             return this
         }
 
-        public override fun applyPushToken(token: String) {
-            editor!!.putString(setHashKey(PUSH_TOKEN), hideValue(token)).apply()
+        public override fun applyPushToken(pushToken: String) {
+            editor!!.putString(setHashKey(PUSH_TOKEN), hideValue(pushToken)).apply()
         }
 
         public override fun setPhoneNumber(phoneNumber: String): UserChamber {
@@ -882,13 +880,13 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
             editor!!.putString(setHashKey(PASSWORD), hideValue(password)).apply()
         }
 
-        public override fun setFirstTimeUser(firstTime: Boolean): UserChamber {
-            editor!!.putString(setHashKey(FIRST_TIME_USER), hideValue(firstTime.toString()))
+        public override fun setFirstTimeUser(firstTimeUser: Boolean): UserChamber {
+            editor!!.putString(setHashKey(FIRST_TIME_USER), hideValue(firstTimeUser.toString()))
             return this
         }
 
-        public override fun applyFirstTimeUser(firstTime: Boolean) {
-            editor!!.putString(setHashKey(FIRST_TIME_USER), hideValue(firstTime.toString())).apply()
+        public override fun applyFirstTimeUser(firstTimeUser: Boolean) {
+            editor!!.putString(setHashKey(FIRST_TIME_USER), hideValue(firstTimeUser.toString())).apply()
         }
 
         public override fun setUserDetail(`object`: Any): UserChamber {
@@ -914,13 +912,12 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
 
         @CheckResult
         public override fun hasLogin(): Boolean? {
-            try {
-                return java.lang.Boolean.parseBoolean(returnValue(HAS_LOGIN))
+            return try {
+                java.lang.Boolean.parseBoolean(returnValue(HAS_LOGIN))
             } catch (e: Exception) {
                 e.printStackTrace()
-                return null
+                null
             }
-
         }
     }
 
@@ -930,12 +927,12 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
      */
     class Editor : BaseEditorAbstract<Editor> {
 
-        constructor() : super(BaseRepository.sharedPreferences) {
+        constructor() : super(sharedPreferences) {
             setDefaultPrefix(defaultPrefix)
             this.secretChamber = BaseRepository.secretChamber
         }
 
-        constructor(keyPrefix: String?) : super(keyPrefix, BaseRepository.sharedPreferences) {
+        constructor(keyPrefix: String?) : super(keyPrefix, sharedPreferences) {
             if (keyPrefix == null) {
                 setDefaultPrefix(defaultPrefix)
             }
@@ -1145,8 +1142,8 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
      */
     class ChamberBuilder(context: Context) : BasePreferencesBuilder<ChamberBuilder>(context) {
 
-        public override fun useThisPrefStorage(pref: String): ChamberBuilder {
-            this.prefName = pref
+        public override fun useThisPrefStorage(mPrefname: String): ChamberBuilder {
+            this.prefName = mPrefname
             return this
         }
 
@@ -1230,7 +1227,7 @@ private constructor(builder: ChamberBuilder) : BaseRepository() {
                 val file = File(getFolderName()!!)
                 try {
                     file.canonicalPath
-                    val newFolder = if (getFolderName()!!.startsWith(".")) getFolderName()!!.substring(1) else getFolderName()
+                    val newFolder = if (getFolderName()!!.startsWith("")) getFolderName()!!.substring(1) else getFolderName()
                     setmFolderName(newFolder!!)
                 } catch (e: IOException) {
                     e.printStackTrace()

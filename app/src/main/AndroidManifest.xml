@@ -15,7 +15,7 @@
 
         <activity
             android:configChanges="locale|screenSize"
-            android:name=".MainActivity"
+            android:name="com.chamber.kotlin.sample.MainActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

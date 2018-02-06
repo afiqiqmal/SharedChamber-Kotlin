@@ -1,12 +1,12 @@
-package com.zeroone.concealexample
+package com.chamber.kotlin.sample
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 
-import com.zeroone.conceal.SharedChamber
+import com.chamber.kotlin.library.SharedChamber
 import com.zeroone.conceal.listener.OnDataChamberChangeListener
-import com.zeroone.conceal.model.ChamberType
+import com.chamber.kotlin.library.model.ChamberType
 
 /**
  * @author : hafiq on 27/03/2017.
@@ -22,7 +22,7 @@ open class BaseActivity : AppCompatActivity(), OnDataChamberChangeListener {
         chamber = SharedChamber.ChamberBuilder(this)
                 .setChamberType(ChamberType.KEY_256)
                 .enableCrypto(false, false)
-                .enableKeyPrefix(true, "walaoweh")
+                .enableKeyPrefix(false, "walaoweh")
                 .setPassword("Password@123")
                 .setPrefListener(this)
                 .buildChamber()

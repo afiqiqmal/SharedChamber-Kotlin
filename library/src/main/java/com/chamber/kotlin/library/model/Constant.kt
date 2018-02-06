@@ -1,4 +1,4 @@
-package com.zeroone.conceal.model
+package com.chamber.kotlin.library.model
 
 import android.os.Environment
 
@@ -12,7 +12,7 @@ object Constant {
     val UTF8 = "UTF-8"
 
 
-    val DEFAULT_DIRECTORY = Environment.getExternalStorageDirectory().toString() + "/."
+    val DEFAULT_DIRECTORY = Environment.getExternalStorageDirectory().toString() + "/"
     val DEFAULT_FILES_FOLDER = "files"
     val DEFAULT_IMAGE_FOLDER = "images"
     val DEFAULT_PREFIX_FILENAME = "conceal_enc_"

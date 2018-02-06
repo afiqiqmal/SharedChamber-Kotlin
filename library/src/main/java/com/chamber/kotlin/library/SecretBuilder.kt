@@ -1,4 +1,4 @@
-package com.zeroone.conceal
+package com.chamber.kotlin.library
 
 import android.content.Context
 
@@ -7,13 +7,14 @@ import com.facebook.android.crypto.keychain.SharedPrefsBackedKeyChain
 import com.facebook.crypto.Crypto
 import com.facebook.crypto.Entity
 import com.facebook.crypto.keychain.KeyChain
-import com.zeroone.conceal.model.ChamberType
+import com.zeroone.conceal.BuildConfig
+import com.chamber.kotlin.library.model.ChamberType
 
 import java.lang.ref.WeakReference
 
 /**
- * Created by hafiq on 05/02/2018.
- */
+* @author by hafiq on 05/02/2018.
+*/
 
 class SecretBuilder(context: Context) {
     private val context: WeakReference<Context>?

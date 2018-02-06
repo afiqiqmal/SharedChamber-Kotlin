@@ -1,12 +1,12 @@
-package com.zeroone.conceal
+package com.chamber.kotlin.library
 
 import android.content.SharedPreferences
 
 import java.lang.reflect.Type
 
 /**
- * Created by hafiq on 28/01/2018.
- */
+* @author by hafiq on 28/01/2018.
+*/
 
 abstract class UserAbstract<T : UserAbstract<T>> : BaseBuilderAbstract {
 

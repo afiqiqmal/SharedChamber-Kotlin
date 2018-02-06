@@ -1,4 +1,4 @@
-package com.zeroone.conceal
+package com.chamber.kotlin.library
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -6,18 +6,27 @@ import android.content.SharedPreferences
 import com.zeroone.conceal.listener.OnDataChamberChangeListener
 
 /**
- * Created by hafiq on 28/01/2018.
- */
+* @author by hafiq on 28/01/2018.
+*/
 
 open class BaseRepository {
+
+    companion object {
+        var chamberFolderName: String = ""
+        var sharedPreferences: SharedPreferences? = null
+        var editor: SharedPreferences.Editor? = null
+        var secretChamber: SecretChamber? = null
+        var onDataChangeListener: OnDataChamberChangeListener? = null
+        var defaultPrefix: String? = null
+    }
 
     var mContext: Context? = null
 
     val chamber: SharedPreferences
         get() = sharedPreferences!!
 
-    val chamberEditor: SharedPreferences.Editor?
-        get() = editor
+    val chamberEditor: SharedPreferences.Editor
+        get() = editor!!
 
     fun throwRunTimeException(message: String, throwable: Throwable) {
         RuntimeException(message, throwable).printStackTrace()
@@ -49,14 +58,5 @@ open class BaseRepository {
 
     fun getChamberFolderName(): String {
         return chamberFolderName
-    }
-
-    companion object {
-        var chamberFolderName: String = ""
-        var sharedPreferences: SharedPreferences? = null
-        var editor: SharedPreferences.Editor? = null
-        var secretChamber: SecretChamber? = null
-        var onDataChangeListener: OnDataChamberChangeListener? = null
-        var defaultPrefix: String? = null
     }
 }

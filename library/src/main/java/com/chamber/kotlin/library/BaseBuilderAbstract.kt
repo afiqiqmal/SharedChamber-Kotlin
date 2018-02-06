@@ -1,11 +1,11 @@
-package com.zeroone.conceal
+package com.chamber.kotlin.library
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 
 /**
- * Created by hafiq on 28/01/2018.
- */
+* @author by hafiq on 28/01/2018.
+*/
 
 @SuppressLint("CommitPrefEdits")
 abstract class BaseBuilderAbstract {
@@ -14,14 +14,7 @@ abstract class BaseBuilderAbstract {
     private var DEFAULT_VALUE: String? = null
     private val SEPARATOR = "_"
     private var innerSharedPreferences: SharedPreferences? = null
-    var editor: SharedPreferences.Editor? = null
-        get() {
-            if (field == null) {
-                throw IllegalArgumentException("Need to initialize SharedChamber.ChamberBuilder first")
-            }
 
-            return field
-        }
     var secretChamber: SecretChamber? = null
 
     constructor(sharedPreferences: SharedPreferences?) {
@@ -65,6 +58,15 @@ abstract class BaseBuilderAbstract {
 
     }
 
+    var editor: SharedPreferences.Editor? = null
+        get() {
+            if (field == null) {
+                throw IllegalArgumentException("Need to initialize SharedChamber.ChamberBuilder first")
+            }
+
+            return field
+        }
+
     fun setDefaultPrefix(defaultPrefix: String?) {
         this.defaultPrefix = defaultPrefix
     }
@@ -76,7 +78,6 @@ abstract class BaseBuilderAbstract {
     }
 
     fun returnValue(KEY: String): String? {
-
         return secretChamber!!.openVault(innerSharedPreferences!!.getString(setHashKey(KEY), null))
                 ?: return DEFAULT_VALUE
     }

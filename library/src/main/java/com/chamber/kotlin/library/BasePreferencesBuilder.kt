@@ -1,14 +1,14 @@
-package com.zeroone.conceal
+package com.chamber.kotlin.library
 
 import android.content.Context
 import android.content.SharedPreferences
 
 import com.zeroone.conceal.listener.OnDataChamberChangeListener
-import com.zeroone.conceal.model.ChamberType
+import com.chamber.kotlin.library.model.ChamberType
 
 /**
- * Created by hafiq on 28/01/2018.
- */
+* @author by hafiq on 28/01/2018.
+*/
 
 abstract class BasePreferencesBuilder<T : BasePreferencesBuilder<T>>(var context: Context?) {
     var keyChain = ChamberType.KEY_256

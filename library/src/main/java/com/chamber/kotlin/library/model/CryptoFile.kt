@@ -1,4 +1,4 @@
-package com.zeroone.conceal.model
+package com.chamber.kotlin.library.model
 
 /**
  * @author : hafiq on 26/03/2017.
