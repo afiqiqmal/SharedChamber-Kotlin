@@ -40,3 +40,5 @@
 #
 #
 #-keep class com.chamber.kotlin.library.Constant { *; }
+
+-keep class com.chamber.kotlin.library.model.** {*;}
